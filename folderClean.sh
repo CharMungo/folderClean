@@ -1,0 +1,84 @@
+#!/usr/bin/bash
+
+directory="$1"
+filetype="$2"
+originals="$3"
+
+if [[ "$originals" == "" ]]; then
+	originals=n
+fi
+
+if [[ "$1" == "" && "$2" == "" ]]; then
+	echo "fileClean [directory] [filetype] [y/n do you want remove files that do not have an original?]"
+fi
+
+
+list_files() {
+	directory="$1"
+	originals="$2"
+	filetype="$3"
+	total=0
+	files=( "$directory"/* )
+	if [[ "$originals" == "y" ]]; then
+		for file in "${files[@]}"; do
+			if [[ $file =~ \([0-9]+\)\.JPG$ ]]; then
+				printf '%s\n' "$file"
+				((total+=1))
+			fi
+		done
+	else
+		for file in "${files[@]}"; do
+			if [[ $file =~ \([0-9]+\)\.JPG$ ]]; then
+				no_type="${file%$type}"
+				origin=$(echo "$file" | sed -E 's/\([0-9]+\)//')
+				if [ -f "$origin" ]; then
+					echo "$file"
+					((total+=1))
+				fi
+
+			fi
+		done
+	fi
+}
+
+delete_files() {
+	directory="$1"
+	originals="$2"
+	filetype="$3"
+	total=0
+	files=( "$directory"/* )
+	if [[ "$originals" == "y" ]]; then
+		for file in "${files[@]}"; do
+			if [[ $file =~ \([0-9]+\)\.JPG$ ]]; then
+				rm "$file"
+				printf '%s\n' "$file deleted"
+				((total+=1))
+			fi
+		done
+	else
+		for file in "${files[@]}"; do
+			if [[ $file =~ \([0-9]+\)\.JPG$ ]]; then
+				no_type="${file%$type}"
+				origin=$(echo "$file" | sed -E 's/\([0-9]+\)//')
+				if [ -f "$origin" ]; then
+					rm "$file"
+					printf '%s\n' "$file deleted"
+					((total+=1))
+				fi
+
+			fi
+		done
+	fi
+}
+
+
+list_files "$directory" "$originals" "$filetype"
+echo "$total files found"
+echo "Delete these files? (y/n)"
+read -r answer
+
+if [[ "$answer" == y ]]; then
+	delete_files "$directory" "$originals" "$filetype"
+	echo "$total files deleted"
+fi
+
