@@ -21,14 +21,14 @@ list_files() {
 	files=( "$directory"/* )
 	if [[ "$originals" == "y" ]]; then
 		for file in "${files[@]}"; do
-			if [[ $file =~ \([0-9]+\)\.JPG$ ]]; then
+			if [[ $file =~ \([0-9]+\)${filetype}$ ]]; then
 				printf '%s\n' "$file"
 				((total+=1))
 			fi
 		done
 	else
 		for file in "${files[@]}"; do
-			if [[ $file =~ \([0-9]+\)\.JPG$ ]]; then
+			if [[ $file =~ \([0-9]+\)${filetype}$ ]]; then
 				no_type="${file%$type}"
 				origin=$(echo "$file" | sed -E 's/\([0-9]+\)//')
 				if [ -f "$origin" ]; then
@@ -49,7 +49,7 @@ delete_files() {
 	files=( "$directory"/* )
 	if [[ "$originals" == "y" ]]; then
 		for file in "${files[@]}"; do
-			if [[ $file =~ \([0-9]+\)\.JPG$ ]]; then
+			if [[ $file =~ \([0-9]+\)${filetype}$ ]]; then
 				rm "$file"
 				printf '%s\n' "$file deleted"
 				((total+=1))
@@ -57,7 +57,7 @@ delete_files() {
 		done
 	else
 		for file in "${files[@]}"; do
-			if [[ $file =~ \([0-9]+\)\.JPG$ ]]; then
+			if [[ $file =~ \([0-9]+\)${filetype}$ ]]; then
 				no_type="${file%$type}"
 				origin=$(echo "$file" | sed -E 's/\([0-9]+\)//')
 				if [ -f "$origin" ]; then
