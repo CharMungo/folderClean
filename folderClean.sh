@@ -1,11 +1,17 @@
 #!/usr/bin/bash
 
-directory="$1"
+direct="$1"
 filetype="$2"
 originals="$3"
 
 if [[ "$originals" == "" ]]; then
 	originals=n
+fi
+
+if [[ "$direct" =~ \/$ ]]; then
+    directory="${direct%/}"
+else
+    directory="$direct"
 fi
 
 if [[ "$1" == "" && "$2" == "" ]]; then
@@ -29,7 +35,7 @@ list_files() {
 	else
 		for file in "${files[@]}"; do
 			if [[ $file =~ \([0-9]+\)${filetype}$ ]]; then
-				no_type="${file%$type}"
+				no_type="${file%$filetype}"
 				origin=$(echo "$file" | sed -E 's/\([0-9]+\)//')
 				if [ -f "$origin" ]; then
 					echo "$file"
@@ -58,7 +64,7 @@ delete_files() {
 	else
 		for file in "${files[@]}"; do
 			if [[ $file =~ \([0-9]+\)${filetype}$ ]]; then
-				no_type="${file%$type}"
+				no_type="${file%$filetype}"
 				origin=$(echo "$file" | sed -E 's/\([0-9]+\)//')
 				if [ -f "$origin" ]; then
 					rm "$file"
