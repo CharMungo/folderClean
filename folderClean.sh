@@ -73,12 +73,20 @@ delete_files() {
 
 
 list_files "$directory" "$originals" "$filetype"
-echo "$total files found"
+if [[ "$total" == 0 ]]; then
+    echo "No files found"
+    exit
+else
+    echo "$total files found"
+fi
 echo "Delete these files? (y/n)"
 read -r answer
 
 if [[ "$answer" == y ]]; then
 	delete_files "$directory" "$originals" "$filetype"
 	echo "$total files deleted"
+else
+    echo "Ended"
+    exit
 fi
 
